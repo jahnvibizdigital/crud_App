@@ -3,15 +3,19 @@ import { useState, useEffect } from "react";
 
 function UserForm({ addUser, updateUser, user, users }) {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [data, setData] = useState("");
 
   useEffect(() => {
     if (user) {
       setName(user.name);
-      setEmail(user.email);
+      setData(
+        typeof user.data === "object"
+          ? JSON.stringify(user.data)
+          : user.data
+      );
     } else {
       setName("");
-      setEmail("");
+      setData("");
     }
   }, [user]);
 
@@ -20,42 +24,21 @@ function UserForm({ addUser, updateUser, user, users }) {
 
     //validation part
     const userName = name.trim();
-    const userEmail = email.trim();
+    const userData = data.trim();
     
-    if (userName === "" || userEmail === "") {
-        alert("Name and Email are required.");
+    if (userName === "" || userData === "") {
+        alert("Name and Data are required.");
         return;
     }
     if (userName.length < 3) {
         alert("Name should contain at least 3 characters.");
         return;
     }
-    if (!/^[A-Za-z ]+$/.test(userName)) {
-        alert("Name should contain only letters.");
-        return;
-    }
-    if (!/\S+@\S+\.\S+/.test(userEmail)) {
-        alert("Please enter a valid email.");
-        return;
-    }
-
-    //duplicate 
-    const duplicate = users.find(
-      u =>
-        u.email.toLowerCase() === userEmail.toLowerCase()
-    );
-
-
-    if (duplicate && !user) {
-      alert("Email already exists.");
-      setName("");
-      setEmail("");
-      return ;
-    }
-
     const newUser = {
         name: userName,
-        email: userEmail,
+        data: {
+          Details: userData,
+        }
     };
 
     if (user) {
@@ -66,7 +49,7 @@ function UserForm({ addUser, updateUser, user, users }) {
     }
 
     setName("");
-    setEmail("");
+    setData("");
 }
   return (
     <form onSubmit={handleSubmit}>
@@ -78,10 +61,10 @@ function UserForm({ addUser, updateUser, user, users }) {
       />
 
       <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="text"
+        placeholder='{"color":"White","capacity":"128 GB"}'
+        value={data}
+        onChange={(e) => setData(e.target.value)}
       />
 
       <button className="add-btn">

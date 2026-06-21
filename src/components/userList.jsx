@@ -8,7 +8,7 @@ function UserList({ users, setEditIndex, deleteUser }) {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Email</th>
+            <th>Data</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -22,7 +22,17 @@ function UserList({ users, setEditIndex, deleteUser }) {
             users.map((user, index) => (
               <tr key={index}>
                 <td>{user.name}</td>
-                <td>{user.email}</td>
+                <td className="data-cell">
+                  {user.data ? (
+                    Object.entries(user.data).map(([key, value]) => (
+                      <div key={key}>
+                        <strong>{key}:</strong> {value}
+                      </div>
+                    ))
+                  ) : (
+                    "No Data"
+                  )}
+                </td>
                 <td>
                   <button className="edit-btn" onClick={() => setEditIndex(index)}>
                     Edit
